@@ -44,15 +44,28 @@ Create and destroy a Vulkan surface on an SDL window.
 #include <iostream>
 #include <vector>
 
-int main()
+#include "simple_logger.h"
+
+int main(int argc, char* argv[])
 {
+    // Logger
+    init_logger("Polaris.log");
+    slog("Polaris Start");
+
     // Create an SDL window that supports Vulkan rendering.
-    if(SDL_Init(SDL_INIT_VIDEO) != 0) {
+    if(SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         std::cout << "Could not initialize SDL." << std::endl;
         return 1;
     }
-    SDL_Window* window = SDL_CreateWindow("Vulkan Window", SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED, 1280, 720, SDL_WINDOW_VULKAN);
+
+    SDL_Window* window = SDL_CreateWindow(
+        "Polaris Engine", 
+        SDL_WINDOWPOS_CENTERED,
+        SDL_WINDOWPOS_CENTERED, 
+        1280, 
+        720, 
+        SDL_WINDOW_VULKAN);
+
     if(window == NULL) {
         std::cout << "Could not create SDL window." << std::endl;
         return 1;
@@ -79,11 +92,11 @@ int main()
     // vk::ApplicationInfo allows the programmer to specifiy some basic information about the
     // program, which can be useful for layers and tools to provide more debug information.
     vk::ApplicationInfo appInfo = vk::ApplicationInfo()
-        .setPApplicationName("Vulkan C++ Windowed Program Template")
+        .setPApplicationName("Polaris Engine")
         .setApplicationVersion(1)
-        .setPEngineName("LunarG SDK")
+        .setPEngineName("Polaris Engine")
         .setEngineVersion(1)
-        .setApiVersion(VK_API_VERSION_1_2);
+        .setApiVersion(VK_API_VERSION_1_3);
     
     // vk::InstanceCreateInfo is where the programmer specifies the layers and/or extensions that
     // are needed.
@@ -142,5 +155,6 @@ int main()
     SDL_Quit();
     instance.destroy();
 
+    freopen("Polaris.txt", "w", stdout);
     return 0;
 }
