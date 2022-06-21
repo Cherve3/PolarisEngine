@@ -30,21 +30,7 @@
 #define VK_USE_PLATFORM_WIN32_KHR
 #endif
 
-// Tell SDL not to mess with main()
-#define SDL_MAIN_HANDLED
-
-
-#include <glm.hpp>
-#include <SDL.h>
-#include <SDL_syswm.h>
-#include <SDL_vulkan.h>
-#include <vulkan/vulkan.hpp>
-
-#include <iostream>
-#include <vector>
-
 #include "PE_graphics.h"
-
 
 int main(int argc, char* argv[])
 {
@@ -52,13 +38,24 @@ int main(int argc, char* argv[])
     init_logger("Polaris.log");
     slog("Polaris Start");
 
-    PE_graphics graphics;
+    PeGraphics graphics;
 
     try {
         graphics.run();
     }
     catch (const std::exception& e) {
         slog(e.what());
+        slog_sync();
+        return EXIT_FAILURE;
+    }
+    catch (const vk::SystemError& err)
+    {
+        slog("vk::SystemError: %s", err.what());
+        return EXIT_FAILURE;
+    }
+    catch (...)
+    {
+        slog("Unknown Error");
         return EXIT_FAILURE;
     }
 

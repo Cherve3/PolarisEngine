@@ -1,61 +1,122 @@
-#pragma once
+#ifndef __PE_GRAPHICS_H__
+#define __PE_GRAPHICS_H__
+
 #include <SDL.h>
 #include <SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
 
-#include "simple_logger.h"
+#include "PE_pipeline.h"
+#include "PE_extensions.h"
+#include "PE_validation.h"
 
-class PE_graphics
+#define _DEBUG 1
+
+class PeGraphics
 {
 	
 public:
 
+	/*
+	 *	@brief Runs the program.
+	 */
 	void run() {
-		SDL_init();
-		vulkan_init();
-		gameloop();
+		sdlInit();
+		vulkanInit();
+		gameLoop();
 		cleanup();
 	}
 
 private:
 
-	SDL_Window* main_window;
+	SDL_Window*						pMainWindow;
 
-	vk::ApplicationInfo vk_app_info;
+	vk::ApplicationInfo				vk_app_info;
 
-	vk::Instance vk_instance;
-	vk::InstanceCreateInfo vk_instance_info;
+	vk::Instance					vk_instance;
+	vk::InstanceCreateInfo			vk_instance_info;
 	
-	Uint32 device_count;
-	VkPhysicalDevice* devices;
-	VkPhysicalDevice gpu;
-	bool logical_device_created;
+	PeValidation					validate;
 
-	VkDevice device;
-	VkSurfaceKHR surface;
+	PeExtension						instance_extensions;
+	PeExtension						device_extensions;
 
-	VkFormat color_format;
-	VkColorSpaceKHR color_space;
+	uint32_t						sdl_extension_count;
+	std::vector<const char*>		sdl_extension_names;
+	std::vector<const char*>		layers;
+	bool							enable_validation_layers;
+	VkDebugUtilsMessengerEXT		debug_callback;
+	
+	bool							logical_device_created;
+	Uint32							device_count;
+	std::vector <VkPhysicalDevice>	devices;
+	VkPhysicalDevice				gpu;
 
-	VkDeviceQueueCreateInfo* queue_create_info;
-	VkPhysicalDeviceFeatures device_features;
+	VkDevice						device;
+	VkSurfaceKHR					surface;
 
-	VkSemaphore image_available_semephore;
-	VkSemaphore render_finished_semephore;
+	VkFormat						color_format;
+	VkColorSpaceKHR					color_space;
 
+	VkDeviceQueueCreateInfo*		pQueueCreateInfo;
+	VkPhysicalDeviceFeatures		device_features;
 
-	//Pipeline* pipe;
+	VkSemaphore						image_available_semephore;
+	VkSemaphore						render_finished_semephore;
+
+	PePipeline*						pPipe;
 
 	//Command* graphicsCommandPool;
 	//UniformBufferObject ubo;
 
-
-	void SDL_init();
-
-	void vulkan_init();
-
-	void gameloop();
-
+	/**
+	 *	@brief Initializes SDL and creates a window to display the program.
+	 */
+	void sdlInit();
+	/**
+	 *	@brief Initializes everything necessary for Vulkan to operate.
+	 */
+	void vulkanInit();
+	/**
+		@brief Specifies the application info.
+	*/
+	void appInfo();
+	/**
+		@brief Specifies the instance info.
+	*/
+	void instanceInfo();
+	/**
+		@brief queries for validation layer properties.
+	*/
+	void validationInit();
+	/**
+	 *	@brief Enable validation layers.
+	 */
+	void enableLayers();
+	/**
+	 *	@brief get the gpu that the engine is going to use.
+	 */
+	void gpuSetup();
+	/**
+	 *	@brief select the gpu that will be used.
+	 */
+	void gpuSelect();
+	/**
+	 *	@brief Initializes instance extensions.
+	 */
+	void instanceExtensionsInit();
+	/**
+	 *	@brief Initializes device extensions.
+	 */
+	void deviceExtensionsInit();
+	/**
+		@brief the main game loop.
+	*/
+	void gameLoop();
+	/**
+		@brief frees all the data to close the program cleanly.
+	*/
 	void cleanup();
 	
 };
+
+#endif
