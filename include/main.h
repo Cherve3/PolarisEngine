@@ -1,4 +1,4 @@
-// /*
+﻿// /*
 // * Polaris Engine
 // *
 // * Copyright (C) 2022 Michael Chervenak aka GitHub: Cherve3
@@ -20,25 +20,33 @@
 // /*
 // * Project Name: PolarisEngine
 // * File Created by: Michael Chervenak
-// * File Name: PE_extensions.h
+// * File Name: main.h
 // * File Created:
-// * 	Date: 01/30/2025
-// * 	Time: 04:01:15
+// * 	Date: 01/31/2025
+// * 	Time: 08:01:42
 // * File Updated:
 // * 	Date: 01/31/2025
-// * 	Time: 08:01:15
+// * 	Time: 08:01:42
 // */
 
 #pragma once
 
-#include <vulkan/vulkan.hpp>
+#if defined(_WIN32)
+#define VK_USE_PLATFORM_WIN32_KHR
+#endif
+#if defined(_WIN64)
+#define VK_USE_PLATFORM_WIN64_KHR
+#endif
 
-class PeExtension
+#define VK_ASSERT_MSG(func, message)\
+{                                   \
+    const VkResult result = func;   \
+    if (result != VK_SUCCESS) {     \
+        slog(message);              \
+        assert(false);              \
+    }                               \
+}
+
+class main
 {
-public:
-    uint32_t enabled_extension_count;
-    std::vector<const char*> enabled_extension_names;
-
-    uint32_t available_extension_count;
-    std::vector<VkExtensionProperties> available_extensions;
 };
