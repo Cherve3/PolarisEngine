@@ -20,18 +20,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="include\PE_extensions.h" />
     <ClCompile Include="include\PE_graphics.h" />
-    <ClCompile Include="include\PE_pipeline.h" />
     <ClCompile Include="include\PE_pipeline_manager.h" />
-    <ClCompile Include="include\PE_validation.h" />
     <ClInclude Include="..\..\Libraries\simple_logger\include\simple_logger.h" />
-    <ClInclude Include="include\main.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PE_graphics.cpp" />
-    <ClCompile Include="src\PE_pipeline.cpp" />
     <ClCompile Include="src\PE_pipeline_manager.cpp" />
     <ClCompile Include="..\..\Libraries\simple_logger\src\simple_logger.c" />
   </ItemGroup>

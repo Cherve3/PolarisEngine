@@ -35,8 +35,7 @@
 
 #include "PE_graphics.h"
 
-#include "main.h"
-
+#include "simple_logger.h"
 
 void PeGraphics::sdlInit()
 {
@@ -139,7 +138,7 @@ void PeGraphics::appInfo()
                   .setApplicationVersion(VK_MAKE_API_VERSION(0, 1, 0, 0))
                   .setPEngineName("Polaris Engine")
                   .setEngineVersion(VK_MAKE_API_VERSION(0, 1, 0, 0))
-                  .setApiVersion(VK_API_VERSION_1_3);
+                  .setApiVersion(VK_API_VERSION_1_4);
 }
 
 void PeGraphics::instanceExtensionsInit()
@@ -209,7 +208,7 @@ void PeGraphics::instanceInfo()
 void PeGraphics::validationInit()
 {
     VK_ASSERT_MSG(vkEnumerateInstanceLayerProperties(&validate.layer_count, nullptr),
-                  "Error enumerating instance layer property count");
+                  "Error enumerating instance layer property count")
 
     slog("discovered %i validation layers", validate.layer_count);
 
@@ -217,10 +216,10 @@ void PeGraphics::validationInit()
     validate.layer_names.resize(validate.layer_count);
 
     VK_ASSERT_MSG(vkEnumerateInstanceLayerProperties(&validate.layer_count, validate.available_layers.data()),
-                  "Error enumerating instance layer property data");
-
+                  "Error enumerating instance layer property data")
+    
     slog("available validation layers:");
-    for (int i = 0; i < validate.layer_count; ++i)
+    for (uint32_t i = 0; i < validate.layer_count; ++i)
     {
         validate.layer_names[i] = validate.available_layers[i].layerName;
         slog("%s", validate.layer_names[i]);
@@ -239,10 +238,11 @@ void PeGraphics::enableLayers()
 
 void PeGraphics::gpuSetup()
 {
-    vkEnumeratePhysicalDevices(
+    VK_ASSERT_MSG(vkEnumeratePhysicalDevices(
         vk_instance,
         &device_count,
-        nullptr);
+        nullptr),
+        "Error enumerating physical devices")
     slog("There are %i device(s) available.", device_count);
     if (!device_count)
     {
@@ -251,16 +251,22 @@ void PeGraphics::gpuSetup()
         return;
     }
     devices.resize(device_count);
-    vkEnumeratePhysicalDevices(vk_instance, &device_count, devices.data());
+    VK_ASSERT_MSG(vkEnumeratePhysicalDevices(
+        vk_instance,
+        &device_count,
+        devices.data()),
+        "Error enumerating physical devices")
 
-    for (auto& device : devices)
-        slog("%s", device);
+    slog("Device List:");
+    for (VkPhysicalDevice& physicalDevice : devices)
+        slog("%s", physicalDevice);
 
     gpuSelect();
 }
 
 void PeGraphics::gpuSelect()
 {
+    //TODO: Being able to change devices or select a preferred device.
     gpu = devices[0];
 }
 

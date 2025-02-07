@@ -31,6 +31,8 @@
 
 #include "PE_pipeline_manager.h"
 
+#include "PE_graphics.h"
+
 void PePipelineManager::pipeline_manager_init(Uint32 max_pipelines)
 {
     if (max_pipelines == 0)
@@ -40,25 +42,25 @@ void PePipelineManager::pipeline_manager_init(Uint32 max_pipelines)
     }
     maxPipelines = max_pipelines;
 
-    PePipeline pipe;
+    PE_Pipeline* pipe;
     for (int i = 0; i < max_pipelines; ++i)
         pipelineList.push_back(pipe);
 
     chainLength = 0;
     slog("pipeline manager created with chain length %i", chainLength);
-    slog("Pipeline System Initialized");
+    slog("Pipeline Manager Initialized");
 }
 
 void PePipelineManager::max_pipeline_increase()
 {
 }
 
-PePipeline* PePipelineManager::pipeline_new()
+PE_Pipeline* PePipelineManager::pipeline_new()
 {
     for (int i = 0; i < maxPipelines; ++i)
     {
-        if (pipelineList.at(i).inUse) continue;
-        return &pipelineList.at(i);
+        if (pipelineList.at(i)->inUse) continue;
+        return pipelineList.at(i);
     }
 
 

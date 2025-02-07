@@ -52,3 +52,9 @@ Mkfile.old
 dkms.conf
 makefile.dep
 *.log
+
+# Additional ignores
+*.idea/
+*.vs/
+*.gfxr
+*int/

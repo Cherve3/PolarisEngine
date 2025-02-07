@@ -29,8 +29,9 @@
 // * 	Time: 08:01:15
 // */
 
-#include "main.h"
 #include "PE_graphics.h"
+
+#include "simple_logger.h"
 
 int main(int argc, char* argv[])
 {
@@ -38,10 +39,9 @@ int main(int argc, char* argv[])
     init_logger("Polaris.log");
     slog("Polaris Start");
 
-    PeGraphics graphics;
-
     try
     {
+        PeGraphics graphics;
         graphics.run();
     }
     catch (const vk::SystemError& err)

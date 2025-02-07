@@ -29,19 +29,22 @@
 // * 	Time: 08:01:15
 // */
 
-#pragma once
+#ifndef PE_PIPELINE_MANAGER_H
+#define PE_PIPELINE_MANAGER_H
 
 #include <SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
 
-#include "PE_pipeline.h"
+#include "simple_logger.h"
+
+struct PE_Pipeline;
 
 class PePipelineManager
 {
 private:
-    std::vector<PePipeline> pipelineList;
-    Uint32 maxPipelines;
-    Uint32 chainLength;
+    std::vector<PE_Pipeline*> pipelineList;
+    Uint32 maxPipelines = 1;
+    Uint32 chainLength = 0;
 
     /*
      *  @brief creates the initial list of pipelines.
@@ -51,9 +54,11 @@ private:
     /*
      *  @brief creates a new pipeline
      */
-    PePipeline* pipeline_new();
+    PE_Pipeline* pipeline_new();
     /*
      *  @brief increases the max amount of pipelines available.
      */
     void max_pipeline_increase();
 };
+
+#endif

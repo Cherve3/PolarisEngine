@@ -29,17 +29,65 @@
 // * 	Time: 08:01:15
 // */
 
-#pragma once
+#ifndef PE_GRAPHICS_H
+#define PE_GRAPHICS_H
 
 #include <SDL.h>
 #include <SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
 
-#include "PE_pipeline.h"
-#include "PE_extensions.h"
-#include "PE_validation.h"
+//#include "simple_logger.h"
 
-#define _DEBUG 1
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
+#define VK_USE_PLATFORM_WIN32_KHR 1
+#endif
+
+#define VK_ASSERT_MSG(func, message)                \
+{                                                   \
+    const VkResult result = func;                   \
+    if (result != VK_SUCCESS) {                     \
+        slog("%s VK result: %s", message, result);  \
+        assert(false);                              \
+    }                                               \
+}                                                   \
+
+#define DEBUG 1
+
+struct PE_Extensions
+{
+    uint32_t enabled_extension_count = 0;
+    std::vector<const char*> enabled_extension_names;
+    uint32_t available_extension_count = 0;
+    std::vector<VkExtensionProperties> available_extensions;
+};
+
+struct PE_Validation
+{
+    uint32_t layer_count = 0;
+    std::vector<VkLayerProperties> available_layers;
+    std::vector<const char*> layer_names;
+};
+
+struct PE_Pipeline
+{
+    bool inUse = false;
+    VkPipeline pipeline = nullptr;
+    VkRenderPass renderPass = nullptr;
+    VkPipelineLayout pipelineLayout = nullptr;
+    size_t vertSize = 0;
+    char* vertShader = nullptr;
+    VkShaderModule vertModule = nullptr;
+    size_t fragSize = 0;
+    char* fragShader = nullptr;
+    VkShaderModule fragModule = nullptr;
+    VkDevice device = nullptr;
+    Uint32* pDescriptorCursor = nullptr; /**<keeps track of which descriptors have been used per frame*/
+    VkDescriptorPool* pDescriptorPool = nullptr;
+    VkDescriptorSetLayout descriptorSetLayout = nullptr;
+    VkDescriptorSet** descriptorSets = nullptr;
+    Uint32 descriptorPoolCount = 0;
+    Uint32 descriptorSetCount = 0;
+};
 
 class PeGraphics
 {
@@ -56,42 +104,42 @@ public:
     }
 
 private:
-    SDL_Window* pMainWindow;
+    SDL_Window* pMainWindow = nullptr;
 
     vk::ApplicationInfo vk_app_info;
 
     vk::Instance vk_instance;
     vk::InstanceCreateInfo vk_instance_info;
 
-    PeValidation validate;
+    PE_Validation validate;
 
-    PeExtension instance_extensions;
-    PeExtension device_extensions;
+    PE_Extensions instance_extensions;
+    PE_Extensions device_extensions;
 
-    uint32_t sdl_extension_count;
-    std::vector<const char*> sdl_extension_names;
-    std::vector<const char*> layers;
-    bool enable_validation_layers;
-    VkDebugUtilsMessengerEXT debug_callback;
+    uint32_t sdl_extension_count = 0;
+    std::vector<std::string> sdl_extension_names;
+    std::vector<std::string> layers;
+    bool enable_validation_layers = false;
+    VkDebugUtilsMessengerEXT debug_callback = nullptr;
 
-    bool logical_device_created;
-    Uint32 device_count;
+    bool logical_device_created = false;
+    Uint32 device_count = 0;
     std::vector<VkPhysicalDevice> devices;
-    VkPhysicalDevice gpu;
+    VkPhysicalDevice gpu = nullptr;
 
-    VkDevice device;
-    VkSurfaceKHR surface;
+    VkDevice device = nullptr;
+    VkSurfaceKHR surface = nullptr;
 
-    VkFormat color_format;
-    VkColorSpaceKHR color_space;
+    VkFormat color_format = VK_FORMAT_UNDEFINED;
+    VkColorSpaceKHR color_space = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
 
-    VkDeviceQueueCreateInfo* pQueueCreateInfo;
-    VkPhysicalDeviceFeatures device_features;
+    VkDeviceQueueCreateInfo* pQueueCreateInfo = nullptr;
+    VkPhysicalDeviceFeatures device_features {};
 
-    VkSemaphore image_available_semephore;
-    VkSemaphore render_finished_semephore;
+    VkSemaphore image_available_semephore = nullptr;
+    VkSemaphore render_finished_semephore = nullptr;
 
-    PePipeline* pPipe;
+    PE_Pipeline pPipe;
 
     //Command* graphicsCommandPool;
     //UniformBufferObject ubo;
@@ -145,3 +193,5 @@ private:
     */
     void cleanup();
 };
+
+#endif
