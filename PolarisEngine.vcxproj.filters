@@ -16,42 +16,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\include\PE_extensions.h">
+    <ClCompile Include="include\PE_graphics.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\PE_graphics.h">
+    <ClCompile Include="include\PE_pipeline_manager.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\include\PE_pipeline.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\PE_pipeline_manager.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\include\PE_validation.h">
-      <Filter>Header Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\PE_graphics.cpp">
+    <ClCompile Include="src\PE_graphics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\PE_pipeline.cpp">
+    <ClCompile Include="src\PE_pipeline_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\PE_pipeline_manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Libraries\simple_logger\src\simple_logger.c">
+    <ClCompile Include="..\..\Libraries\simple_logger\src\simple_logger.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\Libraries\simple_logger\include\simple_logger.h">
+    <ClInclude Include="..\..\Libraries\simple_logger\include\simple_logger.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\main.h">
+    <ClInclude Include="include\Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

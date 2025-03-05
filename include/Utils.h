@@ -1,4 +1,4 @@
-// /*
+﻿// /*
 // * Polaris Engine
 // *
 // * Copyright (C) 2025 Michael Chervenak aka GitHub: Cherve3
@@ -20,48 +20,28 @@
 // /*
 // * Project Name: PolarisEngine
 // * File Created by: Michael Chervenak
-// * File Name: main.cpp
+// * File Name: Utils.h
 // * File Created:
-// * 	Date: 01/31/2025
-// * 	Time: 09:01:08
+// * 	Date: 02/14/2025
+// * 	Time: 20:02:57
 // * File Updated:
 // * 	Date: 03/05/2025
 // * 	Time: 01:03:19
 // */
 
-#include "PE_graphics.h"
+#pragma once
 
+#include <vulkan/vulkan.hpp>
 #include "simple_logger.h"
 
-int main(int argc, char* argv[])
+namespace Utils
 {
-    // Logger
-    init_logger("Polaris.log", false);
-    slog("Polaris Engine Start");
-
-    try
+    inline void vk_assert_msg(VkResult result, const char* message)
     {
-        PeGraphics graphics;
-        graphics.run();
+        //const VkResult result = func();
+        if (result != VK_SUCCESS) {
+            slog("%s VK result: %s", message, result);
+            assert(false);
+        }
     }
-    catch (const vk::SystemError& err)
-    {
-        slog("vk::SystemError: %s", err.what());
-        slog_sync();
-        return EXIT_FAILURE;
-    }
-    catch (const std::exception& e)
-    {
-        slog(e.what());
-        slog_sync();
-        return EXIT_FAILURE;
-    }
-    catch (...)
-    {
-        slog("Unknown Error");
-        slog_sync();
-        return EXIT_FAILURE;
-    }
-
-    return EXIT_SUCCESS;
-}
+};

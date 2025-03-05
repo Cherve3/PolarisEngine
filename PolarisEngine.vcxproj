@@ -23,12 +23,35 @@
     <ClCompile Include="include\PE_graphics.h" />
     <ClCompile Include="include\PE_pipeline_manager.h" />
     <ClInclude Include="..\..\Libraries\simple_logger\include\simple_logger.h" />
+    <ClInclude Include="include\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\PE_graphics.cpp" />
     <ClCompile Include="src\PE_pipeline_manager.cpp" />
     <ClCompile Include="..\..\Libraries\simple_logger\src\simple_logger.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="external\SDL\SDL3-shared.vcxproj">
+      <Project>{d3d22485-2e18-3f6c-8e36-2f10053860df}</Project>
+      <Name>SDL3-shared</Name>
+    </ProjectReference>
+    <ProjectReference Include="external\SDL_image\VisualC\SDL_image.vcxproj">
+      <Project>{2bd5534e-00e2-4bea-ac96-d9a92ea24696}</Project>
+      <Name>SDL_image</Name>
+    </ProjectReference>
+    <ProjectReference Include="external\SDL_mixer\VisualC\SDL_mixer.vcxproj">
+      <Project>{f7e944b3-0815-40cd-b3e4-90b2a15b0e33}</Project>
+      <Name>SDL_mixer</Name>
+    </ProjectReference>
+    <ProjectReference Include="external\SDL_net\VisualC\SDL_net.vcxproj">
+      <Project>{8ab3504f-5e58-4910-afe8-7a1e595ac3f4}</Project>
+      <Name>SDL_net</Name>
+    </ProjectReference>
+    <ProjectReference Include="external\SDL_ttf\VisualC\SDL_ttf.vcxproj">
+      <Project>{dddbd07d-dc76-4af6-8d02-3e2deb6ee255}</Project>
+      <Name>SDL_ttf</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{5A4234BA-9B20-4CD4-B9F0-D7BC800EDB93}</ProjectGuid>
@@ -82,9 +105,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>C:\VulkanSDK\1.4.304.0\Lib;C:\Git\Libraries\SDL2-2.30.11\lib\x64;C:\Git\Libraries\SDL2_net-2.2.0\lib\x64;C:\Git\Libraries\SDL2_mixer-2.8.0\lib\x64;C:\Git\Libraries\SDL2_image-2.8.4\lib\x64;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\fsbank\lib\x64;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\studio\lib\x64;C:\Git\Libraries\SDL2_ttf-2.24.0\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Git\Libraries\simple_logger\libs;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\VulkanSDK\1.4.304.0\Lib;C:\Git\Libraries\simple_logger\libs;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
     <OutDir>$(ProjectDir)bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(ProjectDir)int\$(Configuration)\$(Platform)\</IntDir>
+    <IncludePath>C:\VulkanSDK\1.4.304.0\Include;C:\Git\Projects\PolarisEngine\external\SDL\include;C:\Git\Libraries\simple_logger\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -108,7 +132,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>vulkan-1.lib;SDL2.lib;SDL2main.lib;SDL2_tff.lib;SDL2_mixer.lib;SDL2_net.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
@@ -120,7 +144,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\VulkanSDK\1.4.304.0\Include;C:\Git\Libraries\SDL2-2.30.11\include;C:\Git\Libraries\SDL2_net-2.2.0\include;C:\Git\Libraries\SDL2_mixer-2.8.4\include;C:\Git\Libraries\SDL2_image-2.8.4\include;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\fsbank\inc;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Git\Libraries\glm;C:\Git\Libraries\SDL2_ttf-2.24.0\include;C:\Git\Libraries\simple_logger\include;C:\Git\Projects\PolarisEngine\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);C:\Git\Projects\PolarisEngine\include;..\external\SDL3_image\include;..\external\SDL3_ttf\include;..\external\SDL3_net\include;..\external\SDL3_mixer\include;</AdditionalIncludeDirectories>
       <PreprocessToFile>false</PreprocessToFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
@@ -128,8 +152,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>vulkan-1.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;fmodstudio_vc.lib;fmodstudioL_vc.lib;fsbank_vc.lib;fmod_vc.lib;fmodL_vc.lib;SDL2_net.lib;SDL2_mixer.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
     </Link>
@@ -152,7 +176,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>vulkan-1.lib;SDL2.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
@@ -166,7 +190,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);C:\Git\Projects\PolarisEngine\include;..\external\SDL3_image\include;..\external\SDL3_ttf\include;..\external\SDL3_net\include;..\external\SDL3_mixer\include;</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <LanguageStandard_C>stdc17</LanguageStandard_C>
     </ClCompile>
@@ -175,7 +199,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>vulkan-1.lib;SDL2.lib;SDL2main.lib;SDL2test.lib;fmodstudio_vc.lib;fmodstudioL_vc.lib;fsbank_vc.lib;fmod_vc.lib;fmodL_vc.lib;SDL2_net.lib;SDL2_mixer.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>vulkan-1.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
@@ -188,8 +212,8 @@
             $(LocalDebuggerEnvironment)
         </LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <IncludePath>C:\VulkanSDK\1.3.211.0\Include;C:\Git\Libraries\SDL2-2.30.11\include;C:\Git\Libraries\SDL2_net-2.2.0\include;C:\Git\Libraries\SDL2_mixer-2.8.0\include;C:\Git\Libraries\SDL2_ttf-2.24.0\include;C:\Git\Libraries\SDL2_image-2.8.4\include;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\fsbank\inc;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Git\Libraries\glm\glm;C:\Git\Libraries\simple_logger\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\VulkanSDK\1.3.211.0\Lib;C:\Git\Libraries\SDL2-2.30.11\lib\x64;C:\Git\Libraries\SDL2_net-2.2.0\lib\x64;C:\Git\Libraries\SDL2_mixer-2.8.0\lib\x64;C:\Git\Libraries\SDL2_image-2.8.4\lib\x64;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\fsbank\lib\x64;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\studio\lib\x64;C:\Git\Libraries\SDL2_ttf-2.24.0\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Git\Libraries\simple_logger\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\VulkanSDK\1.4.304.0\Include;C:\Git\Projects\PolarisEngine\external\SDL\include;C:\Git\Libraries\simple_logger\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\VulkanSDK\1.4.304.0\Lib;C:\Git\Libraries\simple_logger\libs;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
     <OutDir>$(ProjectDir)bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(ProjectDir)int\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>
@@ -198,8 +222,8 @@
             $(LocalDebuggerEnvironment)
         </LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <IncludePath>C:\VulkanSDK\1.3.211.0\Include;C:\Git\Libraries\SDL2-2.30.11\include;C:\Git\Libraries\SDL2_net-2.2.0\include;C:\Git\Libraries\SDL2_mixer-2.8.0\include;C:\Git\Libraries\SDL2_ttf-2.24.0\include;C:\Git\Libraries\SDL2_image-2.8.4\include;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\fsbank\inc;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\studio\inc;C:\Git\Libraries\glm\glm;C:\Git\Libraries\simple_logger\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\VulkanSDK\1.3.211.0\Lib;C:\Git\Libraries\SDL2-2.30.11\lib\x64;C:\Git\Libraries\SDL2_net-2.2.0\lib\x64;C:\Git\Libraries\SDL2_mixer-2.8.0\lib\x64;C:\Git\Libraries\SDL2_image-2.8.4\lib\x64;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\fsbank\lib\x64;C:\Git\Libraries\FMOD SoundSystem\FMOD Studio API Windows\api\studio\lib\x64;C:\Git\Libraries\SDL2_ttf-2.24.0\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Git\Libraries\simple_logger\libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\VulkanSDK\1.4.304.0\Include;C:\Git\Projects\PolarisEngine\external\SDL\include;C:\Git\Libraries\simple_logger\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\VulkanSDK\1.4.304.0\Lib;C:\Git\Libraries\simple_logger\libs;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(LibraryPath)</LibraryPath>
     <OutDir>$(ProjectDir)bin\$(Configuration)\$(Platform)\</OutDir>
     <IntDir>$(ProjectDir)int\$(Configuration)\$(Platform)\</IntDir>
   </PropertyGroup>

@@ -1,7 +1,7 @@
 // /*
 // * Polaris Engine
 // *
-// * Copyright (C) 2022 Michael Chervenak aka GitHub: Cherve3
+// * Copyright (C) 2025 Michael Chervenak aka GitHub: Cherve3
 // *
 // *
 // * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,87 +25,76 @@
 // * 	Date: 01/30/2025
 // * 	Time: 04:01:15
 // * File Updated:
-// * 	Date: 01/31/2025
-// * 	Time: 08:01:15
+// * 	Date: 03/05/2025
+// * 	Time: 01:03:19
 // */
 
+#include <cstring>
+#include <cstdio>
 
-#include <string.h>
-#include <stdio.h>
-
-#include "PE_graphics.h"
+#include <SDL3/SDL_vulkan.h>
 
 #include "simple_logger.h"
 
-void PeGraphics::sdlInit()
-{
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-    {
-        slog("Could not initialize SDL.");
-    }
-    else
-    {
-        slog("SDL initialized");
-    }
+#include "Utils.h"
+#include "PE_graphics.h"
 
+void PeGraphics::sdl_init()
+{
+    
+    SDL_Init(SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_CAMERA | SDL_INIT_EVENTS | SDL_INIT_HAPTIC |
+        SDL_INIT_SENSOR | SDL_INIT_GAMEPAD | SDL_INIT_JOYSTICK) != 0 ? slog("SDL Error: %s", SDL_GetError()) : slog("SDL initialized");
+    
     pMainWindow = SDL_CreateWindow(
         "Polaris Engine",
-        SDL_WINDOWPOS_CENTERED,
-        SDL_WINDOWPOS_CENTERED,
         1280,
         720,
         SDL_WINDOW_VULKAN);
 
-    if (pMainWindow == nullptr)
-    {
-        slog("Could not create SDL window.");
-    }
-    else
-    {
-        slog("SDL window created");
-    }
+    pMainWindow == nullptr ? slog("Could not create SDL window.") : slog("SDL window created");
+
 }
 
 
-void PeGraphics::vulkanInit()
+void PeGraphics::vulkan_init()
 {
-    appInfo();
-    instanceExtensionsInit();
-    validationInit();
-    enableLayers();
-    instanceInfo();
+    app_info();
+    instance_extensions_init();
+    validation_init();
+    enable_layers();
+    instance_info();
 
-
+    vk_instance = VK_NULL_HANDLE;
     try
     {
-        vk_instance = createInstance(vk_instance_info);
+        vk_instance = vk::createInstance(vk_instance_info);
     }
     catch (const std::exception& e)
     {
         slog("Could not create a Vulkan instance : %s", e.what());
     }
-
-    if (!SDL_Vulkan_CreateSurface(pMainWindow, vk_instance, &surface))
+    
+    if (!SDL_Vulkan_CreateSurface(pMainWindow, vk_instance, nullptr, reinterpret_cast<VkSurfaceKHR*>(&surface)))
     {
         slog("Could not create a Vulkan surface.");
     }
-    gpuSetup();
-    deviceExtensionsInit();
+    gpu_setup();
+    device_extensions_init();
 }
 
-void PeGraphics::gameLoop()
+void PeGraphics::game_loop()
 {
     // Poll for user input.
-    bool stillRunning = true;
-    while (stillRunning)
+    bool is_running = true;
+    while (is_running)
     {
         SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
             {
-            case SDL_QUIT:
-                stillRunning = false;
+            case SDL_EVENT_QUIT:
+                is_running = false;
                 break;
 
             default:
@@ -131,17 +120,17 @@ void PeGraphics::cleanup()
 
 // TODO: deallocate vectors at close or error.
 
-void PeGraphics::appInfo()
+void PeGraphics::app_info()
 {
     vk_app_info = vk::ApplicationInfo()
-                  .setPApplicationName("Polaris Engine")
-                  .setApplicationVersion(VK_MAKE_API_VERSION(0, 1, 0, 0))
-                  .setPEngineName("Polaris Engine")
-                  .setEngineVersion(VK_MAKE_API_VERSION(0, 1, 0, 0))
-                  .setApiVersion(VK_API_VERSION_1_4);
+                .setPApplicationName("Polaris Engine")
+                .setApplicationVersion(VK_MAKE_API_VERSION(0, 1, 0, 0))
+                .setPEngineName("Polaris Engine")
+                .setEngineVersion(VK_MAKE_API_VERSION(0, 1, 0, 0))
+                .setApiVersion(VK_API_VERSION_1_4);
 }
 
-void PeGraphics::instanceExtensionsInit()
+void PeGraphics::instance_extensions_init()
 {
     vkEnumerateInstanceExtensionProperties(
         nullptr,
@@ -163,11 +152,11 @@ void PeGraphics::instanceExtensionsInit()
     for (const auto& i : instance_extensions.available_extensions)
     {
         instance_extensions.enabled_extension_names.push_back(i.extensionName);
-        slog("%s", i.extensionName);
+        slog("    %s", i.extensionName);
     }
 }
 
-void PeGraphics::deviceExtensionsInit()
+void PeGraphics::device_extensions_init()
 {
     vkEnumerateDeviceExtensionProperties(
         gpu,
@@ -190,11 +179,11 @@ void PeGraphics::deviceExtensionsInit()
     for (const auto& i : device_extensions.available_extensions)
     {
         device_extensions.enabled_extension_names.push_back(i.extensionName);
-        slog("%s", i.extensionName);
+        slog("    %s", i.extensionName);
     }
 }
 
-void PeGraphics::instanceInfo()
+void PeGraphics::instance_info()
 {
     vk_instance_info = vk::InstanceCreateInfo()
                        .setFlags(vk::InstanceCreateFlags())
@@ -205,30 +194,32 @@ void PeGraphics::instanceInfo()
                        .setPpEnabledLayerNames(validate.layer_names.data());
 }
 
-void PeGraphics::validationInit()
+void PeGraphics::validation_init()
 {
-    VK_ASSERT_MSG(vkEnumerateInstanceLayerProperties(&validate.layer_count, nullptr),
-                  "Error enumerating instance layer property count")
 
+    Utils::vk_assert_msg(
+        vkEnumerateInstanceLayerProperties(&validate.layer_count, nullptr),
+        "Error enumerating instance layer property count");
     slog("discovered %i validation layers", validate.layer_count);
 
     validate.available_layers.resize(validate.layer_count);
     validate.layer_names.resize(validate.layer_count);
 
-    VK_ASSERT_MSG(vkEnumerateInstanceLayerProperties(&validate.layer_count, validate.available_layers.data()),
-                  "Error enumerating instance layer property data")
+    Utils::vk_assert_msg(
+        vkEnumerateInstanceLayerProperties(&validate.layer_count, validate.available_layers.data()),
+        "Error enumerating instance layer property data");
     
     slog("available validation layers:");
     for (uint32_t i = 0; i < validate.layer_count; ++i)
     {
         validate.layer_names[i] = validate.available_layers[i].layerName;
-        slog("%s", validate.layer_names[i]);
+        slog("    %s", validate.layer_names[i]);
     }
 }
 
-void PeGraphics::enableLayers()
+void PeGraphics::enable_layers()
 {
-    if (_DEBUG)
+    if (DEBUG)
     {
         validate.layer_count++;
         validate.layer_names.push_back("VK_LAYER_KHRONOS_validation");
@@ -236,13 +227,11 @@ void PeGraphics::enableLayers()
     }
 }
 
-void PeGraphics::gpuSetup()
+void PeGraphics::gpu_setup()
 {
-    VK_ASSERT_MSG(vkEnumeratePhysicalDevices(
-        vk_instance,
-        &device_count,
-        nullptr),
-        "Error enumerating physical devices")
+    Utils::vk_assert_msg(
+        vkEnumeratePhysicalDevices(vk_instance, &device_count, nullptr),
+        "Error discovering physical devices to enumerate");
     slog("There are %i device(s) available.", device_count);
     if (!device_count)
     {
@@ -251,20 +240,18 @@ void PeGraphics::gpuSetup()
         return;
     }
     devices.resize(device_count);
-    VK_ASSERT_MSG(vkEnumeratePhysicalDevices(
-        vk_instance,
-        &device_count,
-        devices.data()),
-        "Error enumerating physical devices")
+    Utils::vk_assert_msg(
+        vkEnumeratePhysicalDevices(vk_instance, &device_count, devices.data()),
+        "Error enumerating physical devices");
 
     slog("Device List:");
     for (VkPhysicalDevice& physicalDevice : devices)
-        slog("%s", physicalDevice);
+        slog("    %s", physicalDevice);
 
-    gpuSelect();
+    gpu_select();
 }
 
-void PeGraphics::gpuSelect()
+void PeGraphics::gpu_select()
 {
     //TODO: Being able to change devices or select a preferred device.
     gpu = devices[0];

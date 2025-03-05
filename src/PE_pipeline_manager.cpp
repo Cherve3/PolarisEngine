@@ -1,7 +1,7 @@
 // /*
 // * Polaris Engine
 // *
-// * Copyright (C) 2022 Michael Chervenak aka GitHub: Cherve3
+// * Copyright (C) 2025 Michael Chervenak aka GitHub: Cherve3
 // *
 // *
 // * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,12 +25,13 @@
 // * 	Date: 01/30/2025
 // * 	Time: 04:01:15
 // * File Updated:
-// * 	Date: 01/31/2025
-// * 	Time: 08:01:15
+// * 	Date: 03/05/2025
+// * 	Time: 01:03:19
 // */
 
-#include "PE_pipeline_manager.h"
+#include "simple_logger.h"
 
+#include "PE_pipeline_manager.h"
 #include "PE_graphics.h"
 
 void PePipelineManager::pipeline_manager_init(Uint32 max_pipelines)

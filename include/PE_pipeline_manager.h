@@ -1,7 +1,7 @@
 // /*
 // * Polaris Engine
 // *
-// * Copyright (C) 2022 Michael Chervenak aka GitHub: Cherve3
+// * Copyright (C) 2025 Michael Chervenak aka GitHub: Cherve3
 // *
 // *
 // * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,17 +25,16 @@
 // * 	Date: 01/30/2025
 // * 	Time: 04:01:15
 // * File Updated:
-// * 	Date: 01/31/2025
-// * 	Time: 08:01:15
+// * 	Date: 03/05/2025
+// * 	Time: 01:03:19
 // */
 
 #ifndef PE_PIPELINE_MANAGER_H
 #define PE_PIPELINE_MANAGER_H
 
-#include <SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
 
-#include "simple_logger.h"
+#include <SDL3/SDL_vulkan.h>
 
 struct PE_Pipeline;
 

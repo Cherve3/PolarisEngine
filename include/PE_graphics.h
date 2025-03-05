@@ -1,7 +1,7 @@
 // /*
 // * Polaris Engine
 // *
-// * Copyright (C) 2022 Michael Chervenak aka GitHub: Cherve3
+// * Copyright (C) 2025 Michael Chervenak aka GitHub: Cherve3
 // *
 // *
 // * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,33 +25,22 @@
 // * 	Date: 01/30/2025
 // * 	Time: 04:01:15
 // * File Updated:
-// * 	Date: 01/31/2025
-// * 	Time: 08:01:15
+// * 	Date: 03/05/2025
+// * 	Time: 01:03:19
 // */
 
 #ifndef PE_GRAPHICS_H
 #define PE_GRAPHICS_H
 
-#include <SDL.h>
-#include <SDL_vulkan.h>
 #include <vulkan/vulkan.hpp>
 
-//#include "simple_logger.h"
+#include <SDL3/SDL.h>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
 #define VK_USE_PLATFORM_WIN32_KHR 1
 #endif
 
-#define VK_ASSERT_MSG(func, message)                \
-{                                                   \
-    const VkResult result = func;                   \
-    if (result != VK_SUCCESS) {                     \
-        slog("%s VK result: %s", message, result);  \
-        assert(false);                              \
-    }                                               \
-}                                                   \
-
-#define DEBUG 1
+inline constexpr bool DEBUG = true;
 
 struct PE_Extensions
 {
@@ -97,9 +86,9 @@ public:
      */
     void run()
     {
-        sdlInit();
-        vulkanInit();
-        gameLoop();
+        sdl_init();
+        vulkan_init();
+        game_loop();
         cleanup();
     }
 
@@ -120,24 +109,24 @@ private:
     std::vector<std::string> sdl_extension_names;
     std::vector<std::string> layers;
     bool enable_validation_layers = false;
-    VkDebugUtilsMessengerEXT debug_callback = nullptr;
-
+    vk::DebugUtilsMessengerEXT debug_callback = nullptr;
+    
     bool logical_device_created = false;
     Uint32 device_count = 0;
     std::vector<VkPhysicalDevice> devices;
-    VkPhysicalDevice gpu = nullptr;
+    vk::PhysicalDevice gpu = nullptr;
+    
+    vk::Device device = nullptr;
+    vk::SurfaceKHR surface = nullptr;
 
-    VkDevice device = nullptr;
-    VkSurfaceKHR surface = nullptr;
+    vk::Format color_format = vk::Format::eUndefined;
+    vk::ColorSpaceKHR color_space = vk::ColorSpaceKHR::eSrgbNonlinear;
 
-    VkFormat color_format = VK_FORMAT_UNDEFINED;
-    VkColorSpaceKHR color_space = VK_COLOR_SPACE_SRGB_NONLINEAR_KHR;
+    vk::DeviceQueueCreateInfo* pQueueCreateInfo = nullptr;
+    vk::PhysicalDeviceFeatures device_features {};
 
-    VkDeviceQueueCreateInfo* pQueueCreateInfo = nullptr;
-    VkPhysicalDeviceFeatures device_features {};
-
-    VkSemaphore image_available_semephore = nullptr;
-    VkSemaphore render_finished_semephore = nullptr;
+    vk::Semaphore image_available_semephore = nullptr;
+    vk::Semaphore render_finished_semephore = nullptr;
 
     PE_Pipeline pPipe;
 
@@ -147,47 +136,47 @@ private:
     /**
      *	@brief Initializes SDL and creates a window to display the program.
      */
-    void sdlInit();
+    void sdl_init();
     /**
      *	@brief Initializes everything necessary for Vulkan to operate.
      */
-    void vulkanInit();
+    void vulkan_init();
     /**
         @brief Specifies the application info.
     */
-    void appInfo();
+    void app_info();
     /**
         @brief Specifies the instance info.
     */
-    void instanceInfo();
+    void instance_info();
     /**
         @brief queries for validation layer properties.
     */
-    void validationInit();
+    void validation_init();
     /**
      *	@brief Enable validation layers.
      */
-    void enableLayers();
+    void enable_layers();
     /**
      *	@brief get the gpu that the engine is going to use.
      */
-    void gpuSetup();
+    void gpu_setup();
     /**
      *	@brief select the gpu that will be used.
      */
-    void gpuSelect();
+    void gpu_select();
     /**
      *	@brief Initializes instance extensions.
      */
-    void instanceExtensionsInit();
+    void instance_extensions_init();
     /**
      *	@brief Initializes device extensions.
      */
-    void deviceExtensionsInit();
+    void device_extensions_init();
     /**
         @brief the main game loop.
     */
-    void gameLoop();
+    void game_loop();
     /**
         @brief frees all the data to close the program cleanly.
     */
